@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>Reporte de caso {{ case.id }}</title>
+  <style>
+    @page { size: A4; margin: 18mm; }
+    body { font-family: "DejaVu Sans", Arial, sans-serif; color: #1a1a1a; font-size: 11pt; }
+    h1 { color: #0a3d62; font-size: 22pt; margin-bottom: 0; }
+    h2 { color: #0a3d62; border-bottom: 1px solid #ccc; padding-bottom: 4px; margin-top: 24px; }
+    h3 { color: #38598b; }
+    table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+    th, td { border: 1px solid #ccc; padding: 6px; text-align: left; font-size: 10pt; }
+    th { background: #f1f5f8; }
+    .meta { color: #555; font-size: 10pt; }
+    .sev-1 { background: #eafaf1; }
+    .sev-2 { background: #fef9e7; }
+    .sev-3 { background: #fdebd0; }
+    .sev-4 { background: #fadbd8; }
+    .sev-5 { background: #f1948a; }
+    .pill { display: inline-block; padding: 2px 8px; border-radius: 999px; background: #ecf0f1; font-size: 9pt; }
+  </style>
+</head>
+<body>
+  <h1>Reporte consolidado</h1>
+  <p class="meta">Generado: {{ generated_at }}</p>
+
+  <h2>Datos del caso</h2>
+  <table>
+    <tr><th>ID</th><td>{{ case.id }}</td></tr>
+    <tr><th>Titulo</th><td>{{ case.title }}</td></tr>
+    <tr><th>Descripcion</th><td>{{ case.description or "-" }}</td></tr>
+    <tr><th>Estado</th><td>{{ case.status }}</td></tr>
+    <tr><th>Prioridad</th><td>{{ case.priority }}</td></tr>
+    <tr><th>Creado</th><td>{{ case.created_at }}</td></tr>
+    <tr><th>Inicio</th><td>{{ case.started_at or "-" }}</td></tr>
+    <tr><th>Finalizado</th><td>{{ case.finished_at or "-" }}</td></tr>
+    <tr><th>Subtareas (total / completadas / fallidas)</th>
+        <td>{{ case.total_subtasks }} / {{ case.completed_subtasks }} / {{ case.failed_subtasks }}</td></tr>
+  </table>
+
+  <h2>Resumen por severidad</h2>
+  <table>
+    <tr>
+      <th>Severidad</th>
+      <th>Total</th>
+    </tr>
+    {% for sev in [5,4,3,2,1] %}
+    <tr class="sev-{{ sev }}">
+      <td>{{ sev }}</td>
+      <td>{{ severity_summary.get(sev, 0) }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+
+  <h2>Fuentes de datos analizadas</h2>
+  <table>
+    <tr><th>Tipo</th><th>Archivo</th><th>Mime</th><th>Tamano</th></tr>
+    {% for ds in case.data_sources %}
+    <tr>
+      <td>{{ ds.type }}</td>
+      <td>{{ ds.original_filename or ds.storage_key }}</td>
+      <td>{{ ds.mime_type or "-" }}</td>
+      <td>{{ ds.size_bytes }} B</td>
+    </tr>
+    {% endfor %}
+  </table>
+
+  <h2>Hallazgos por categoria</h2>
+  {% for category, items in findings_by_category.items() %}
+    <h3>{{ category }} <span class="pill">{{ items|length }}</span></h3>
+    <table>
+      <tr>
+        <th>Severidad</th>
+        <th>Confianza</th>
+        <th>Evidencia</th>
+      </tr>
+      {% for f in items %}
+      <tr class="sev-{{ f.severity }}">
+        <td>{{ f.severity }}</td>
+        <td>{{ "%.2f"|format(f.confidence|float) }}</td>
+        <td><pre style="white-space: pre-wrap; font-family: 'DejaVu Sans Mono', monospace; font-size: 9pt;">{{ f.evidence }}</pre></td>
+      </tr>
+      {% endfor %}
+    </table>
+  {% else %}
+    <p>No se generaron hallazgos.</p>
+  {% endfor %}
+
+  <h2>Auditoria de subtareas</h2>
+  <table>
+    <tr><th>Worker</th><th>Estado</th><th>Intentos</th><th>Inicio</th><th>Fin</th><th>Error</th></tr>
+    {% for st in case.subtasks %}
+    <tr>
+      <td>{{ st.worker_type }}</td>
+      <td>{{ st.status }}</td>
+      <td>{{ st.attempts }}</td>
+      <td>{{ st.started_at or "-" }}</td>
+      <td>{{ st.finished_at or "-" }}</td>
+      <td>{{ st.error or "-" }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+</body>
+</html>

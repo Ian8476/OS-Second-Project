@@ -1,0 +1,197 @@
+{
+  "rabbit_version": "3.13.0",
+  "users": [
+    {
+      "name": "mediaintel",
+      "password": "mediaintel_dev",
+      "tags": "administrator"
+    }
+  ],
+  "vhosts": [
+    {
+      "name": "/"
+    }
+  ],
+  "permissions": [
+    {
+      "user": "mediaintel",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    }
+  ],
+  "policies": [
+    {
+      "vhost": "/",
+      "name": "ha-default",
+      "pattern": "^queue\\.",
+      "apply-to": "queues",
+      "definition": {
+        "ha-mode": "all",
+        "ha-sync-mode": "automatic"
+      },
+      "priority": 0
+    }
+  ],
+  "exchanges": [
+    {
+      "name": "mediaintel.tasks",
+      "vhost": "/",
+      "type": "direct",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "mediaintel.dlx",
+      "vhost": "/",
+      "type": "direct",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    }
+  ],
+  "queues": [
+    {
+      "name": "queue.text",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-max-priority": 10,
+        "x-dead-letter-exchange": "mediaintel.dlx",
+        "x-dead-letter-routing-key": "queue.text.dlq"
+      }
+    },
+    {
+      "name": "queue.audio",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-max-priority": 10,
+        "x-dead-letter-exchange": "mediaintel.dlx",
+        "x-dead-letter-routing-key": "queue.audio.dlq"
+      }
+    },
+    {
+      "name": "queue.image",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-max-priority": 10,
+        "x-dead-letter-exchange": "mediaintel.dlx",
+        "x-dead-letter-routing-key": "queue.image.dlq"
+      }
+    },
+    {
+      "name": "queue.aggregate",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-max-priority": 10,
+        "x-dead-letter-exchange": "mediaintel.dlx",
+        "x-dead-letter-routing-key": "queue.aggregate.dlq"
+      }
+    },
+    {
+      "name": "queue.text.dlq",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
+      "name": "queue.audio.dlq",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
+      "name": "queue.image.dlq",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
+      "name": "queue.aggregate.dlq",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    }
+  ],
+  "bindings": [
+    {
+      "source": "mediaintel.tasks",
+      "vhost": "/",
+      "destination": "queue.text",
+      "destination_type": "queue",
+      "routing_key": "queue.text",
+      "arguments": {}
+    },
+    {
+      "source": "mediaintel.tasks",
+      "vhost": "/",
+      "destination": "queue.audio",
+      "destination_type": "queue",
+      "routing_key": "queue.audio",
+      "arguments": {}
+    },
+    {
+      "source": "mediaintel.tasks",
+      "vhost": "/",
+      "destination": "queue.image",
+      "destination_type": "queue",
+      "routing_key": "queue.image",
+      "arguments": {}
+    },
+    {
+      "source": "mediaintel.tasks",
+      "vhost": "/",
+      "destination": "queue.aggregate",
+      "destination_type": "queue",
+      "routing_key": "queue.aggregate",
+      "arguments": {}
+    },
+    {
+      "source": "mediaintel.dlx",
+      "vhost": "/",
+      "destination": "queue.text.dlq",
+      "destination_type": "queue",
+      "routing_key": "queue.text.dlq",
+      "arguments": {}
+    },
+    {
+      "source": "mediaintel.dlx",
+      "vhost": "/",
+      "destination": "queue.audio.dlq",
+      "destination_type": "queue",
+      "routing_key": "queue.audio.dlq",
+      "arguments": {}
+    },
+    {
+      "source": "mediaintel.dlx",
+      "vhost": "/",
+      "destination": "queue.image.dlq",
+      "destination_type": "queue",
+      "routing_key": "queue.image.dlq",
+      "arguments": {}
+    },
+    {
+      "source": "mediaintel.dlx",
+      "vhost": "/",
+      "destination": "queue.aggregate.dlq",
+      "destination_type": "queue",
+      "routing_key": "queue.aggregate.dlq",
+      "arguments": {}
+    }
+  ]
+}

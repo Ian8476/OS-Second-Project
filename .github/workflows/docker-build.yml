@@ -1,0 +1,32 @@
+name: Docker build
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target:
+          - { service: api, dockerfile: services/api/Dockerfile }
+          - { service: worker_text, dockerfile: services/worker_text/Dockerfile }
+          - { service: worker_audio, dockerfile: services/worker_audio/Dockerfile }
+          - { service: worker_image, dockerfile: services/worker_image/Dockerfile }
+          - { service: worker_aggregator, dockerfile: services/worker_aggregator/Dockerfile }
+          - { service: dashboard, dockerfile: dashboard/Dockerfile }
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Build (no push)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ${{ matrix.target.dockerfile }}
+          push: false
+          tags: mediaintel/${{ matrix.target.service }}:ci

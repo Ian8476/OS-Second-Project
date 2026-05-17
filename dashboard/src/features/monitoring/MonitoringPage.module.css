@@ -1,0 +1,74 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.links {
+  display: flex;
+  gap: 12px;
+  font-size: 13px;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.metric {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--brand);
+}
+
+.events {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+}
+
+.events h2 {
+  margin: 0 0 12px;
+  font-size: 16px;
+}
+
+.events ul {
+  max-height: 360px;
+  overflow: auto;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 12px;
+}
+
+.events li {
+  border-bottom: 1px dashed var(--border);
+  padding: 6px 0;
+}
+
+.events pre {
+  background: var(--surface-hover);
+  padding: 6px;
+  border-radius: var(--radius-sm);
+  margin: 4px 0 0;
+  font-size: 11px;
+}

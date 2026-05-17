@@ -1,0 +1,13 @@
+# Shared deps usados por todos los servicios Python.
+SQLAlchemy==2.0.36
+alembic==1.14.0
+psycopg[binary]==3.2.3
+celery==5.4.0
+kombu==5.4.2
+redis==5.2.0
+minio==7.2.10
+pydantic==2.9.2
+pydantic-settings==2.6.1
+structlog==24.4.0
+PyJWT==2.10.1
+passlib[bcrypt]==1.7.4

@@ -1,0 +1,46 @@
+# Override de desarrollo. Compose lo aplica encima del compose principal
+# automaticamente. Para produccion: docker compose -f docker-compose.yml up.
+
+services:
+  api:
+    volumes:
+      - ./services/api:/app/services/api
+      - ./services/shared:/app/services/shared
+    command:
+      [
+        "uvicorn",
+        "services.api.app.main:app",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "8000",
+        "--reload",
+      ]
+
+  worker_text:
+    volumes:
+      - ./services/worker_text:/app/services/worker_text
+      - ./services/shared:/app/services/shared
+
+  worker_audio:
+    volumes:
+      - ./services/worker_audio:/app/services/worker_audio
+      - ./services/shared:/app/services/shared
+
+  worker_image:
+    volumes:
+      - ./services/worker_image:/app/services/worker_image
+      - ./services/shared:/app/services/shared
+
+  worker_aggregator:
+    volumes:
+      - ./services/worker_aggregator:/app/services/worker_aggregator
+      - ./services/shared:/app/services/shared
+
+  dashboard:
+    build:
+      target: dev
+    volumes:
+      - ./dashboard/src:/app/src
+      - ./dashboard/public:/app/public
+    command: ["npm", "run", "dev", "--", "--host", "0.0.0.0", "--port", "80"]

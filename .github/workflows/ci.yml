@@ -1,0 +1,66 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  python-lint-and-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [api, worker_text, worker_audio, worker_image, worker_aggregator]
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dev tooling
+        run: |
+          python -m pip install --upgrade pip
+          pip install ruff pytest
+
+      - name: Install service dependencies
+        working-directory: services/${{ matrix.service }}
+        run: pip install -r requirements.txt
+
+      - name: Ruff lint
+        run: |
+          ruff check services/${{ matrix.service }} services/shared || true
+
+      - name: Run tests
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+          DATABASE_URL: postgresql+psycopg://dummy:dummy@localhost/dummy
+          DATABASE_URL_SYNC: postgresql+psycopg://dummy:dummy@localhost/dummy
+          CELERY_BROKER_URL: memory://
+          CELERY_RESULT_BACKEND: cache+memory://
+          REDIS_URL: redis://localhost:6379/0
+          REDIS_PUBSUB_URL: redis://localhost:6379/2
+        run: |
+          if [ -d services/${{ matrix.service }}/tests ]; then
+            pytest services/${{ matrix.service }}/tests -q
+          fi
+
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: dashboard
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: dashboard/package-lock.json
+      - run: npm install --no-audit --no-fund
+      - run: npm run typecheck
+      - run: npm test

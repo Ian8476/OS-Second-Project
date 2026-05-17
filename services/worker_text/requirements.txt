@@ -1,0 +1,2 @@
+-r ../shared/requirements.txt
+vaderSentiment==3.3.2

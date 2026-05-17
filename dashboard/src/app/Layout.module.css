@@ -1,0 +1,85 @@
+.shell {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--fg);
+}
+
+.sidebar {
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  padding: 24px 16px;
+}
+
+.brand {
+  font-size: 20px;
+  margin: 0 0 24px;
+  color: var(--brand);
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.link {
+  padding: 8px 12px;
+  border-radius: 6px;
+  color: var(--fg-muted);
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.link:hover {
+  background: var(--surface-hover);
+  color: var(--fg);
+}
+
+.active {
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: var(--brand-soft);
+  color: var(--brand);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.footer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.role {
+  font-size: 12px;
+  color: var(--fg-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.logout {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--fg);
+  padding: 6px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.logout:hover {
+  background: var(--surface-hover);
+}
+
+.main {
+  padding: 24px 32px;
+  overflow-y: auto;
+}

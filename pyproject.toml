@@ -1,0 +1,16 @@
+[tool.ruff]
+line-length = 95
+target-version = "py311"
+extend-exclude = [
+  "services/shared/alembic/versions",
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "C4"]
+ignore = ["B008"]  # FastAPI Depends en defaults
+
+[tool.ruff.lint.isort]
+known-first-party = ["services"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]

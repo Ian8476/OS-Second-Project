@@ -1,0 +1,63 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "panels": [
+    {
+      "type": "stat",
+      "title": "API requests (rate 1m)",
+      "targets": [
+        {
+          "expr": "sum(rate(http_requests_total[1m]))",
+          "refId": "A"
+        }
+      ],
+      "gridPos": { "h": 6, "w": 6, "x": 0, "y": 0 },
+      "id": 1
+    },
+    {
+      "type": "stat",
+      "title": "Tareas Celery procesadas (rate 1m)",
+      "targets": [
+        {
+          "expr": "sum(rate(celery_task_runtime_seconds_count[1m]))",
+          "refId": "A"
+        }
+      ],
+      "gridPos": { "h": 6, "w": 6, "x": 6, "y": 0 },
+      "id": 2
+    },
+    {
+      "type": "timeseries",
+      "title": "Latencia p95 por endpoint",
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le, handler))",
+          "refId": "A"
+        }
+      ],
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+      "id": 3
+    },
+    {
+      "type": "timeseries",
+      "title": "Tamano de colas RabbitMQ",
+      "targets": [
+        {
+          "expr": "rabbitmq_queue_messages_ready",
+          "legendFormat": "{{queue}}",
+          "refId": "A"
+        }
+      ],
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 8 },
+      "id": 4
+    }
+  ],
+  "schemaVersion": 38,
+  "tags": ["mediaintel"],
+  "templating": { "list": [] },
+  "time": { "from": "now-15m", "to": "now" },
+  "title": "MediaIntel Overview",
+  "uid": "mediaintel-overview",
+  "version": 1,
+  "refresh": "10s"
+}
